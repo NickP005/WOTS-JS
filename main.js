@@ -14,17 +14,10 @@ function sha256(ascii) {
 	var words = [];
 	var asciiBitLength = ascii[lengthProperty]*8;
 	
-	//* caching results is optional - remove/add slash from front of this line to toggle
-	// Initial hash value: first 32 bits of the fractional parts of the square roots of the first 8 primes
-	// (we actually calculate the first 64, but extra values are just ignored)
 	var hash = sha256.h = sha256.h || [];
 	// Round constants: first 32 bits of the fractional parts of the cube roots of the first 64 primes
 	var k = sha256.k = sha256.k || [];
 	var primeCounter = k[lengthProperty];
-	/*/
-	var hash = [], k = [];
-	var primeCounter = 0;
-	//*/
 
 	var isComposite = {};
 	for (var candidate = 2; primeCounter < 64; candidate++) {
@@ -36,8 +29,7 @@ function sha256(ascii) {
 			k[primeCounter++] = (mathPow(candidate, 1/3)*maxWord)|0;
 		}
 	}
-	///console.log(k);
-
+	
 	ascii += '\x80' // Append Ƈ' bit (plus zero padding)
 	while (ascii[lengthProperty]%64 - 56) ascii += '\x00' // More zero padding
 	for (i = 0; i < ascii[lengthProperty]; i++) {
@@ -95,8 +87,7 @@ function sha256(ascii) {
     var how_many_itinerations_done  = 1;
 
     var bytes_int_result = [];
-    //bytes_int_result.push(how_many_itinerations_done);
-
+	
 	for (i = 0; i < 8; i++) {
 		for (j = 3; j + 1; j--) {
             var b = (hash[i]>>(j*8))&255;
@@ -107,34 +98,11 @@ function sha256(ascii) {
             result += ((b < 16) ? 0 : '') + b.toString(16);
             how_many_itinerations_done++;
 		}
-    }
-    ///console.log(bytes_int_result.toString());
-    //console.log(result)
-    ///console.log("iterations: " + how_many_itinerations_done.toString())
+   	 }
 	return bytes_int_result;
 };
 
-/*
-from: https://stackoverflow.com/a/16436975
-*/
-function arraysEqual(a, b) {
-	if (a === b) return true;
-	if (a == null || b == null) return false;
-	if (a.length !== b.length) return false;
-  
-	// If you don't care about the order of the elements inside
-	// the array, you should sort both arrays here.
-	// Please note that calling sort on an array will modify that array.
-	// you might want to clone your array first.
-  
-	for (var i = 0; i < a.length; ++i) {
-	  if (a[i] !== b[i]) return false;
-	}
-	return true;
-}
-
-
-//I did also this to make sometimes everything simpler
+//I did this to make the code more clean
 Array.prototype.toASCII = function () {
 	var return_str = "";
 	for (var i = 0; i < this.length; i++) {
@@ -252,13 +220,9 @@ function prf(input, key) {
 
 	var byte_copied_key = byte_copy(key, PARAMSN);
 	buf.pushArray(byte_copied_key);
-	//console.log("key copied : " + byte_copied_key );
-
+	
 	var byte_copied_input = byte_copy(input,32);
 	buf.pushArray(byte_copied_input);
-	//console.log("input copied(prf) : " + byte_copied_input );
-	//console.log("buf: " + buf);
-	//console.log(buf.toASCII());
 
 	//I am dubios of this but should theoretically work as expected
 	return sha256(buf.toASCII());
@@ -269,14 +233,11 @@ function t_hash(input, pub_seed) {
 	var addr_as_bytes = []; //maximum lenght 32
 
 	var buf = ull_to_bytes(PARAMSN, [XMSS_HASH_PADDING_F]);
-	//console.log("buf of " + XMSS_HASH_PADDING_F.toString() + ": " + buf.toString());
-
+	
 	/* generate n-byte key */
 	set_key_and_mask(0);
 	addr_as_bytes = addr_to_bytes();
-	//console.log("addr as bytes: " + addr_as_bytes);
 	var to_push_buf = prf(addr_as_bytes, pub_seed);
-	//console.log("to push: " + to_push_buf.toString());
 	buf.pushArray(to_push_buf);
 
 	/*generate the n-byte mask */
@@ -396,6 +357,26 @@ console.log(pk);
 
 console.log("pub key from sig");
 console.log(pub_key);
+
+
+/*
+from: https://stackoverflow.com/a/16436975
+*/
+function arraysEqual(a, b) {
+	if (a === b) return true;
+	if (a == null || b == null) return false;
+	if (a.length !== b.length) return false;
+  
+	// If you don't care about the order of the elements inside
+	// the array, you should sort both arrays here.
+	// Please note that calling sort on an array will modify that array.
+	// you might want to clone your array first.
+  
+	for (var i = 0; i < a.length; ++i) {
+	  if (a[i] !== b[i]) return false;
+	}
+	return true;
+}
 
 if(arraysEqual(pk, pub_key)) {
 	console.log("WORKSSS!!!!!!")
