@@ -7,8 +7,8 @@ For example:
 
  For any question don't hesitate to contact me on Discord NickP05#6940
 */
-import {wots_public_key_gen, wots_sign, wots_publickey_from_sig} from 'wots.mjs';
-// theoretically the path should be in ./modules/wots.mjs              ^
+import {wots_public_key_gen, wots_sign, wots_publickey_from_sig} from 'wots.min.mjs';
+// theoretically the path should be in ./modules/wots.min.mjs              ^
 
 /*
 Minified version. 
