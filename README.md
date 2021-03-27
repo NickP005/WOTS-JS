@@ -13,6 +13,7 @@ Mochimo Discord server: https://discord.gg/39KNMbfXyX
 
 ### Generate a WOTS+ public key:
  > wots_public_key_gen(seed, pub_seed, addr)
+ 
  Where:
   - seed is a secret 32 bytes (8 bits each) decimal array (so values from 0 to 255)
   - pub_seed is a public 32 bytes (8 bits each) decimal array (0..255)
@@ -22,6 +23,7 @@ Mochimo Discord server: https://discord.gg/39KNMbfXyX
 
 ### Generate a WOTS+ signature:
   > wots_sign(message, seed, pub_seed, addr)
+  
   Where:
    - message is the decimal array (0..255) of bytes you need to sign
    - seed is a secret 32 bytes (8 bits each) decimal array (so values from 0 to 255)
@@ -31,6 +33,7 @@ Mochimo Discord server: https://discord.gg/39KNMbfXyX
 
 ### Validate a WOTS+ signature:
   > wots_publickey_from_sig(signature, message, pub_seed, addr)
+  
   Where:
    - signature is a 2144 bytes decimal array (0..255)
    - message is the decimal array (0..255) of bytes you need to sign
