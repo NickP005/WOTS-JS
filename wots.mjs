@@ -10,6 +10,22 @@ e[t>>2]|=n<<(3-t)%4*8}for(e[e.length]=f/a|0,e[e.length]=f,n=0;n<e.length;){var u
 (l=[A+((h(d,2)^h(d,13)^h(d,22))+(d&l[1]^d&l[2]^l[1]&l[2]))|0].concat(l))[4]=l[4]+A|0}for(t=0;t<8;t++)l[t]=l[t]+v[t]|0}var C=[];
 for(t=0;t<8;t++)for(n=3;n+1;n--){var M=l[t]>>8*n&255;C.push(M),(M<16?0:"")+M.toString(16),0}return C}
 
+/*
+from: https://stackoverflow.com/a/16436975
+*/
+/*
+function arraysEqual(a, b) {
+	if (a === b) return true;
+	if (a == null || b == null) return false;
+	if (a.length !== b.length) return false;
+  
+	for (var i = 0; i < a.length; ++i) {
+	  if (a[i] !== b[i]) return false;
+	}
+	return true;
+}
+*/
+
 function bArr_toString(byte_array) {
 	var return_str = "";
 	for (var i = 0; i < byte_array.length; i++) {
@@ -37,6 +53,7 @@ Array.prototype.pushArray = function(arr) {
 };
 
 // NOW THERE ARE THE DEFINITIONS
+
 var PARAMSN = 32;
 var WOTSW = 16;
 var WOTSLOGW = 4;
@@ -45,7 +62,7 @@ var WOTSLEN2 = 3;
 var WOTSLEN  = WOTSLEN1 + WOTSLEN2;
 var WOTSSIGBYTES = WOTSLEN * PARAMSN;
 
-/* 2144 + 32(public seed) + 32(addr + tag) = 2208 */
+/* 2144 + 32 + 32 = 2208 */
 var TXSIGLEN  = 2144;
 var TXADDRLEN = 2208;
 
@@ -73,7 +90,9 @@ function wots_sign(msg, seed, pub_seed, addr_bytes) {
 	var lenghts = []; //its WOTSLEN long (67)
 	var signature = [];
 	lenghts = chain_lenghts(msg);
-
+	console.log("lenghts");
+	console.log(lenghts.length);
+	console.log(lenghts.toString());
 	/* the wots private key comes from the seed*/
 	var private_key = expand_seed(seed); // this is the private key
 
@@ -217,12 +236,13 @@ function wots_checksum(msg_base_w) {
 	for (var i = 0; i < WOTSLEN1; i++) {
 		csum += WOTSW - 1 - msg_base_w[i];
 	}
-
 	/* convert checksum to base_w */
-	csum << (8 - ((WOTSLEN2 * WOTSLOGW) % 8));
+	csum = csum << (8 - ((WOTSLEN2 * WOTSLOGW) % 8));
+	//console.log(csum);
 	csum_bytes = ull_to_bytes(Math.round((WOTSLEN2 * WOTSLOGW + 7) / 8), from_int_to_byte_array(csum)); 
 	// ^^^ TO CHECK! from_int_to_byte_array makes the most significant byte in the end!
 	
+	//console.log("csum bytes: " + csum_bytes.toString());
 	var csum_base_w = base_w(WOTSLEN2, csum_bytes);
 	return csum_base_w;
 }
@@ -272,4 +292,4 @@ function bytes_to_addr(addr_bytes) {
 	return out_addr;
 }
 
-export {wots_public_key_gen, wots_sign, wots_publickey_from_sig};
+export {sha256, wots_sign, wots_public_key_gen, wots_publickey_from_sig, ull_to_bytes, from_int_to_byte_array, byte_copy};
